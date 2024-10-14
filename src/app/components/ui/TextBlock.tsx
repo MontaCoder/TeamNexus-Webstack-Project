@@ -19,12 +19,12 @@ const TextBlock: FC<TextBlockProps> = memo(({
   const baseClass = 'tracking-tight';
 
   const sizeMap: Record<string, string> = {
-    h1: 'scroll-margin-24 text-4xl font-bold lg:text-5xl',
-    h2: 'scroll-margin-20 text-3xl font-bold lg:text-4xl',
-    h3: 'scroll-margin-16 text-2xl font-medium lg:text-3xl',
-    h4: 'scroll-margin-12 text-xl font-medium lg:text-2xl',
-    h5: 'scroll-margin-10 text-lg font-medium lg:text-xl',
-    h6: 'scroll-margin-8 text-base font-medium lg:text-lg',
+    h1: 'scroll-margin-20 text-4xl font-bold lg:text-5xl',
+    h2: 'scroll-margin-16 text-3xl font-bold lg:text-4xl',
+    h3: 'scroll-margin-14 text-2xl font-medium lg:text-3xl',
+    h4: 'scroll-margin-10 text-xl font-medium lg:text-2xl',
+    h5: 'scroll-margin-8 text-lg font-medium lg:text-xl',
+    h6: 'scroll-margin-6 text-base font-medium lg:text-lg',
     p: 'leading-7 mt-6:first-of-type',
   };
 
