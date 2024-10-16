@@ -14,6 +14,7 @@ import { z } from "zod";
 import { useState } from "react";
 import { Provider } from "@supabase/supabase-js";
 import { sbBrowserClient } from "@/sb/SBClient";
+import { createAccountByEmail } from "@/operations/createAccountByEmail";
 
 const defaultAuthPage = () => {
 
@@ -32,7 +33,20 @@ const defaultAuthPage = () => {
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+        try {
+            setIsAuthenticating(true);
+            const res = await createAccountByEmail(values);
+            const { data, error } = JSON.parse(res);
+            if (error) {
+                console.warn('Log in error:', error);
+                return;
+            }
+            // Handle successful login if needed
+        } catch (err) {
+            console.error('An unexpected error occurred:', err);
+        } finally {
+            setIsAuthenticating(false);
+        }
     }
 
     async function socialLogin(provider:Provider) {
