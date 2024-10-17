@@ -11,18 +11,35 @@ import { FcGoogle } from "react-icons/fc";
 import { MdOutlineAutoAwesome } from "react-icons/md";
 import { RxGithubLogo } from "react-icons/rx";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Provider } from "@supabase/supabase-js";
 import { sbBrowserClient } from "@/sb/SBClient";
 import { createAccountByEmail } from "@/operations/createAccountByEmail";
+import { isMapIterator } from "util/types";
+import { useRouter } from "next/navigation";
 
 const defaultAuthPage = () => {
 
     const [isAuthenticating, setIsAuthenticating] = useState(false);
 
+    const [isMounted, setIsMounted] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        const checkUserSession = async () => {
+            const { data: { session } } = await sbBrowserClient.auth.getSession();
+            if (session) {
+                router.push('/');
+            }
+        };
+
+        checkUserSession();
+        setIsMounted(true);
+    }, [router]);
+
 
     const formSchema = z.object({
-        email: z.string().email({message:"put a valid email"}).min(4, { message: 'Email must be above 4 characters' }),
+        email: z.string().email({ message: "put a valid email" }).min(4, { message: 'Email must be above 4 characters' }),
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -49,7 +66,7 @@ const defaultAuthPage = () => {
         }
     }
 
-    async function socialLogin(provider:Provider) {
+    async function socialLogin(provider: Provider) {
         setIsAuthenticating(true);
         await sbBrowserClient.auth.signInWithOAuth({
             provider,
@@ -57,6 +74,8 @@ const defaultAuthPage = () => {
         });
         setIsAuthenticating(false);
     }
+
+    if (!isMounted) return null;
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-blue-200">
@@ -81,8 +100,8 @@ const defaultAuthPage = () => {
                 />
 
                 <div className="flex flex-col space-y-4 mb-6">
-                    <Button disabled={isAuthenticating}  variant="outline" className="flex items-center justify-center space-x-2 border border-gray-300 hover:bg-gray-50 transition duration-200"
-                    onClick={() => socialLogin("google")}>
+                    <Button disabled={isAuthenticating} variant="outline" className="flex items-center justify-center space-x-2 border border-gray-300 hover:bg-gray-50 transition duration-200"
+                        onClick={() => socialLogin("google")}>
                         <FcGoogle size={24} />
                         <TextBlock
                             className="text-lg"
@@ -90,8 +109,8 @@ const defaultAuthPage = () => {
                             variant="p"
                         />
                     </Button>
-                    <Button  disabled={isAuthenticating} variant="outline" className="flex items-center justify-center space-x-2 border border-gray-300 hover:bg-gray-50 transition duration-200"
-                    onClick={() => socialLogin("github")}>
+                    <Button disabled={isAuthenticating} variant="outline" className="flex items-center justify-center space-x-2 border border-gray-300 hover:bg-gray-50 transition duration-200"
+                        onClick={() => socialLogin("github")}>
                         <RxGithubLogo size={24} />
                         <TextBlock
                             className="text-lg"
